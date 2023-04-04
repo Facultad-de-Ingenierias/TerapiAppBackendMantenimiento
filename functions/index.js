@@ -1,10 +1,19 @@
 const functions = require("firebase-functions");
-const express = require('express')
+const admin = require("firebase-admin");
 
-const app = express()
+admin.initializeApp();
 
-app.get('/hello-world', (req, res) => {
-    return res.status(200).json({message: 'Hello World'})
+const reservaQuery = require("./query/reservaQuery");
+const prueba = require("./helpers/notificacionGmail");
+
+// // Create and deploy your first functions
+// // https://firebase.google.com/docs/functions/get-started
+//
+exports.helloWorld = functions.https.onRequest((request, response) => {
+    functions.logger.info("Hello logs!", { structuredData: true });
+    response.send("Hello from Firebase!");
 });
 
-exports.app = functions.https.onRequest(app);
+exports.crearReserva = reservaQuery.crearReserva;
+exports.consultarReservaId = reservaQuery.consultarReservaId;
+exports.consultarReservasFecha = reservaQuery.consultarReservasFecha;
