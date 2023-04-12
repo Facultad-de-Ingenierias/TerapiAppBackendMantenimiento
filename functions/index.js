@@ -10,10 +10,12 @@ const prueba = require("./helpers/notificacionGmail");
 // // https://firebase.google.com/docs/functions/get-started
 //
 exports.helloWorld = functions.https.onRequest((request, response) => {
-    functions.logger.info("Hello logs!", { structuredData: true });
-    response.send("Hello from Firebase!");
+  functions.logger.info("Hello logs!", { structuredData: true });
+  response.send("Hello from Firebase!");
 });
 
 exports.crearReserva = reservaQuery.crearReserva;
 exports.consultarReservaId = reservaQuery.consultarReservaId;
 exports.consultarReservasFecha = reservaQuery.consultarReservasFecha;
+exports.consultarReservas = reservaQuery.consultarReservas;
+exports.consultarReservasPorFecha = reservaQuery.consultarReservasPorFecha;
