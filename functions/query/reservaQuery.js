@@ -76,6 +76,23 @@ exports.consultarReservasFecha = functions.https.onCall(
   }
 );
 
+exports.consultarReservasPorFecha = functions.https.onCall(async (data, context) => {
+    try {
+        const listaReservas = [];
+        const querySnapshot = await db.collection("Reserva")
+        .where("Fecha", "==", data.Fecha).get();
+
+        querySnapshot.forEach(doc => {
+            listaReservas.push(doc.data());
+        })
+        return listaReservas;
+    } catch (error) {
+        throw new functions.https.HttpsError('failed-precondition',
+            `Hubo un error al consultar las reservas para la fecha ${data.Fecha}: 
+        ${error.message}`);
+    }
+});
+
 exports.consultarReservas = functions.https.onCall(async (data, context) => {
   try {
     const listaReservas = [];

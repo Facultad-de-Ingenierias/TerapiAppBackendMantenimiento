@@ -18,3 +18,4 @@ exports.crearReserva = reservaQuery.crearReserva;
 exports.consultarReservaId = reservaQuery.consultarReservaId;
 exports.consultarReservasFecha = reservaQuery.consultarReservasFecha;
 exports.consultarReservas = reservaQuery.consultarReservas;
+exports.consultarReservasPorFecha = reservaQuery.consultarReservasPorFecha;
