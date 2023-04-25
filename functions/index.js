@@ -4,6 +4,7 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 
 const reservaQuery = require("./query/reservaQuery");
+const servicioQuery = require("./query/servicioQuery");
 const prueba = require("./helpers/notificacionGmail");
 
 // // Create and deploy your first functions
@@ -19,3 +20,5 @@ exports.consultarReservaId = reservaQuery.consultarReservaId;
 exports.consultarReservasFecha = reservaQuery.consultarReservasFecha;
 exports.consultarReservas = reservaQuery.consultarReservas;
 exports.consultarReservasPorFecha = reservaQuery.consultarReservasPorFecha;
+
+exports.crearServicio = servicioQuery.crearServicio;
