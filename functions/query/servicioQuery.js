@@ -70,3 +70,27 @@ function consultarServicioNombre(data) {
         );
     }
 }
+
+async function consultarServicios() {
+    try {
+        const list = [];
+        const servicioQuery = await db.collection("Servicio").get();
+
+        servicioQuery.forEach((doc) => {
+            let servicio = {
+                Id : doc.id,
+                Nombre: doc.data().Nombre 
+            }
+            list.push(servicio);
+        });
+
+        return list;
+    } catch (error) {
+        throw new functions.https.HttpsError(
+            "failed-precondition",
+            `Hubo un error al consultar servicios: ${error.message} `
+        );
+    }
+}
+
+module.exports = consultarServicios;
