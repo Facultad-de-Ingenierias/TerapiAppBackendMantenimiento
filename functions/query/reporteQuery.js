@@ -7,30 +7,41 @@ const db = admin.firestore();
 
 exports.reservasMasVendidasMes = functions.https.onCall(async (data, context) => {
     try {
-        const querySnapshot = await db.collection("Reserva").where("Id_EstadoReserva", "==", 1).get();
+        const fechaActual = new Date();
         const fechaEntrante = new Date(data.Fecha);
-        const list = [];
-        let masVendidos = new Map();
-        const listaServicios = await consultarServicios();
-        let cantidad = 0;
-        //Al parecer no se puede en los foreach de las consultas...
-        for (let i = 0; i < listaServicios.length; i++) {
-            let servicio = listaServicios[i];
-            let cantidad = 0;
-            querySnapshot.forEach((doc) => {
-                let fechaSalida = new Date(doc.data().Fecha);
-                if (fechaSalida.getMonth() == fechaEntrante.getMonth()) {
-                    if (servicio.Id == doc.data().Id_Servicio) {
-                        cantidad += 1;
+        let masVendidos = [];
+
+        if (fechaEntrante.getMonth() <= fechaActual.getMonth() ) {
+            const listaReservas = await db.collection("Reserva").where("Id_EstadoReserva", "==", 2).get();
+            const listaServicios = await consultarServicios.consultarServicios();
+            //Al parecer no se puede en los foreach de las consultas...
+            for (let i = 0; i < listaServicios.length; i++) {
+                let cantidad = 0;
+                let servicio = listaServicios[i];
+                listaReservas.forEach((doc) => {
+                    let fechaSalida = new Date(doc.data().Fecha);
+                    if (fechaSalida.getMonth() == fechaEntrante.getMonth()) {
+                        if (servicio.Id == doc.data().Id_Servicio) {
+                            cantidad += 1;
+                        }
                     }
+                });
+                let respuesta = {
+                    Nombre: servicio.Nombre,
+                    Cantidad: cantidad
                 }
-            });
-            masVendidos.set(servicio.Nombre, cantidad);
+                masVendidos.push(respuesta);
+            }
+            return masVendidos;
+        } else {
+            throw new functions.https.HttpsError(
+                "failed-precondition",
+                `La ${data.Fecha} no puede tener un mes mayor al de la fecha actual.`
+              );
         }
-        return listaServicios[0].Id+"-"+querySnapshot.docs[0].get("Id_Servicio");
     } catch (error) {
         throw new functions.https.HttpsError('failed-precondition',
-            `Hubo un error al consultar las reservas para la fecha ${data.Fecha}: 
+            `Hubo un error al consultar los servicios mas vendidos para la fecha ${data.Fecha}: 
         ${error.message}`);
     }
 });

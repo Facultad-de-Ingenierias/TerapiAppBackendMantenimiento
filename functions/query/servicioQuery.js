@@ -71,20 +71,20 @@ function consultarServicioNombre(data) {
     }
 }
 
-async function consultarServicios() {
+exports.consultarServicios = async function() {
     try {
-        const list = [];
+        const listaServicios = [];
         const servicioQuery = await db.collection("Servicio").get();
 
         servicioQuery.forEach((doc) => {
             let servicio = {
-                Id : doc.id,
-                Nombre: doc.data().Nombre 
+                Id: doc.id,
+                Nombre: doc.data().Nombre
             }
-            list.push(servicio);
+            listaServicios.push(servicio);
         });
 
-        return list;
+        return listaServicios;
     } catch (error) {
         throw new functions.https.HttpsError(
             "failed-precondition",
@@ -93,4 +93,25 @@ async function consultarServicios() {
     }
 }
 
-module.exports = consultarServicios;
+exports.consultarServicioReserva = functions.https.onCall(async (data, context) => {
+    try {
+        let listaServicio = [];
+        const servicioQuery = await db.collection("Servicio").doc(data.Id).get();
+        const servicio = servicioQuery.data();
+        if (servicio != null) {
+            listaServicio.push(servicio)
+            return listaServicio;
+        } else {
+            throw new functions.https.HttpsError(
+                "failed-precondition",
+                `No existe un servicio con el Id ${data.Id}.`
+            );
+        }
+    } catch (error) {
+        throw new functions.https.HttpsError(
+            "failed-precondition",
+            `Hubo un error al consultar el servicio con Id ${data.Id}.
+        ${error.message}`
+        );
+    }
+});
