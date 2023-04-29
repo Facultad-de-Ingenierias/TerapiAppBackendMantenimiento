@@ -11,7 +11,7 @@ exports.reservasMasVendidasMes = functions.https.onCall(async (data, context) =>
         const fechaEntrante = new Date(data.Fecha);
         let masVendidos = [];
 
-        if (fechaEntrante.getMonth() <= fechaActual.getMonth() ) {
+        if (fechaEntrante.getMonth() <= fechaActual.getMonth()) {
             const listaReservas = await db.collection("Reserva").where("Id_EstadoReserva", "==", 2).get();
             const listaServicios = await consultarServicios.consultarServicios();
             //Al parecer no se puede en los foreach de las consultas...
@@ -28,6 +28,8 @@ exports.reservasMasVendidasMes = functions.https.onCall(async (data, context) =>
                 });
                 let respuesta = {
                     Nombre: servicio.Nombre,
+                    Precio: servicio.Precio,
+                    Duracion: servicio.Duracion,
                     Cantidad: cantidad
                 }
                 masVendidos.push(respuesta);
@@ -37,7 +39,7 @@ exports.reservasMasVendidasMes = functions.https.onCall(async (data, context) =>
             throw new functions.https.HttpsError(
                 "failed-precondition",
                 `La ${data.Fecha} no puede tener un mes mayor al de la fecha actual.`
-              );
+            );
         }
     } catch (error) {
         throw new functions.https.HttpsError('failed-precondition',

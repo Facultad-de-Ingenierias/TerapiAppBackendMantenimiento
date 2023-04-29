@@ -71,7 +71,7 @@ function consultarServicioNombre(data) {
     }
 }
 
-exports.consultarServicios = async function() {
+exports.consultarServicios = async function () {
     try {
         const listaServicios = [];
         const servicioQuery = await db.collection("Servicio").get();
@@ -79,7 +79,9 @@ exports.consultarServicios = async function() {
         servicioQuery.forEach((doc) => {
             let servicio = {
                 Id: doc.id,
-                Nombre: doc.data().Nombre
+                Nombre: doc.data().Nombre,
+                Precio: doc.data().Precio,
+                Duracion: doc.data().Duracion
             }
             listaServicios.push(servicio);
         });
