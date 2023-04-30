@@ -8,10 +8,11 @@ const db = admin.firestore();
 exports.reservasMasVendidasMes = functions.https.onCall(async (data, context) => {
     try {
         const fechaActual = new Date();
+        const ultimoDiaDelMes = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 0);
         const fechaEntrante = new Date(data.Fecha);
         let masVendidos = [];
 
-        if (fechaEntrante.getMonth() <= fechaActual.getMonth()) {
+        if (fechaEntrante <= ultimoDiaDelMes) {
             const listaReservas = await db.collection("Reserva").where("Id_EstadoReserva", "==", 2).get();
             const listaServicios = await consultarServicios.consultarServicios();
             //Al parecer no se puede en los foreach de las consultas...
