@@ -7,12 +7,13 @@ const db = admin.firestore();
 exports.crearReserva = functions.https.onCall(async (data, context) => {
   try {
     const reservaExiste = consultarReservaFechaYHora(data);
+    
     if ((await reservaExiste).size == 0) {
-      const DateCurrent = new Date();
-      DateCurrent.setUTCDate(DateCurrent.getUTCDate() + 15);
-      const Date1 = DateCurrent.toISOString().substring(0, 10);
-      const Date2 = new Date().toISOString().substring(0, 10);
-      if (data.Fecha >= Date2 && data.Fecha <= Date1) {
+      const fechaActual = new Date();
+      fechaActual.setUTCDate(fechaActual.getUTCDate() + 15);
+      const fecha1 = fechaActual.toISOString().substring(0, 10);
+      const fecha2 = new Date().toISOString().substring(0, 10);
+      if (data.Fecha >= fecha2 && data.Fecha <= fecha1) {
         await db.collection("Reserva").doc().create({
           Fecha: data.Fecha,
           Hora: data.Hora,

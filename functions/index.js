@@ -5,6 +5,7 @@ admin.initializeApp();
 
 const reservaQuery = require("./query/reservaQuery");
 const servicioQuery = require("./query/servicioQuery");
+const reporteQuery = require("./query/reporteQuery");
 const prueba = require("./helpers/notificacionGmail");
 
 // // Create and deploy your first functions
@@ -22,3 +23,6 @@ exports.consultarReservas = reservaQuery.consultarReservas;
 exports.consultarReservasPorFecha = reservaQuery.consultarReservasPorFecha;
 
 exports.crearServicio = servicioQuery.crearServicio;
+exports.consultarServicioReserva = servicioQuery.consultarServicioReserva;
+
+exports.reservasMasVendidasMes = reporteQuery.reservasMasVendidasMes;
