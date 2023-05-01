@@ -7,7 +7,7 @@ const db = admin.firestore();
 exports.crearReserva = functions.https.onCall(async (data, context) => {
   try {
     const reservaExiste = consultarReservaFechaYHora(data);
-    
+
     if ((await reservaExiste).size == 0) {
       const fechaActual = new Date();
       fechaActual.setUTCDate(fechaActual.getUTCDate() + 15);
@@ -77,22 +77,28 @@ exports.consultarReservasFecha = functions.https.onCall(
   }
 );
 
-exports.consultarReservasPorFecha = functions.https.onCall(async (data, context) => {
+exports.consultarReservasPorFecha = functions.https.onCall(
+  async (data, context) => {
     try {
-        const listaReservas = [];
-        const querySnapshot = await db.collection("Reserva")
-        .where("Fecha", "==", data.Fecha).get();
+      const listaReservas = [];
+      const querySnapshot = await db
+        .collection("Reserva")
+        .where("Fecha", "==", data.Fecha)
+        .get();
 
-        querySnapshot.forEach(doc => {
-            listaReservas.push(doc.data());
-        })
-        return listaReservas;
+      querySnapshot.forEach((doc) => {
+        listaReservas.push(doc.data());
+      });
+      return listaReservas;
     } catch (error) {
-        throw new functions.https.HttpsError('failed-precondition',
-            `Hubo un error al consultar las reservas para la fecha ${data.Fecha}: 
-        ${error.message}`);
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        `Hubo un error al consultar las reservas para la fecha ${data.Fecha}: 
+        ${error.message}`
+      );
     }
-});
+  }
+);
 
 exports.consultarReservas = functions.https.onCall(async (data, context) => {
   try {
@@ -146,3 +152,26 @@ function consultarReservaFechaYHora(data) {
     );
   }
 }
+
+exports.consultarReservasIdCliente = functions.https.onCall(
+  async (data, context) => {
+    try {
+      const lista = [];
+      const querySnapshot = await db
+        .collection("Reserva")
+        .where("Id_Cliente", "==", data.Id_Cliente)
+        .get();
+
+      querySnapshot.forEach((doc) => {
+        lista.push(doc.data());
+      });
+      return lista;
+    } catch (error) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        `Hubo un error al consultar las reservas para el cliente con id ${data.Id_Cliente}: 
+        ${error.message}`
+      );
+    }
+  }
+);
