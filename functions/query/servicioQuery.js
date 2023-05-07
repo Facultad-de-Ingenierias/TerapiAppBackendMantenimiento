@@ -71,7 +71,7 @@ function consultarServicioNombre(data) {
     }
 }
 
-exports.consultarServicios = async function () {
+exports.consultarServiciosLocal = async function () {
     try {
         const listaServicios = [];
         const servicioQuery = await db.collection("Servicio").get();
@@ -134,3 +134,21 @@ exports.consultarServicioReserva = functions.https.onCall(async (data, context) 
         );
     }
 });
+
+exports.consultarServicios = functions.https.onCall(async (data, context) => {
+    try {
+      const listaServicios = [];
+      const querySnapshot = await db.collection("Servicio").get();
+  
+      querySnapshot.forEach((doc) => {
+        listaServicios.push(doc.data());
+      });
+      return listaServicios;
+    } catch (error) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        `Hubo un error al consultar los servicios.
+          ${error.message}`
+      );
+    }
+  });
