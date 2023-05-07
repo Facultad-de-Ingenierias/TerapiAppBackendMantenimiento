@@ -95,6 +95,23 @@ exports.consultarServicios = async function () {
     }
 }
 
+exports.consultarServicioPorId = async function(Id){
+
+    try {
+      const item = await db.collection('Servicio').doc(Id).get();
+      const servicio = item.data();
+
+      return servicio;
+    } catch (error) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        `Hubo un error al consultar el servicio por Id ${Id}
+              : ${error.message} `
+      );
+    }
+  
+}
+
 exports.consultarServicioReserva = functions.https.onCall(async (data, context) => {
     try {
         let listaServicio = [];
