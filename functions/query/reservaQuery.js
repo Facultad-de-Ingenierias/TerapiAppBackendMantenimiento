@@ -79,47 +79,105 @@ exports.consultarReservasFecha = functions.https.onCall(
   }
 );
 
-exports.consultarReservasPorFecha = functions.https.onCall(async (data, context) => {
-  try {
-    let listaReservas = [];
-    let querySnapshot = await db.collection("Reserva").where("Fecha", "==", data.Fecha).get();
+exports.consultarReservasPorFecha = functions.https.onCall(
+  async (data, context) => {
+    try {
+      let listaReservas = [];
+      let querySnapshot = await db
+        .collection("Reserva")
+        .where("Fecha", "==", data.Fecha)
+        .get();
 
-    let promises = querySnapshot.docs.map(async (doc) => {
+      let promises = querySnapshot.docs.map(async (doc) => {
+        let servicio = await consultarServicio.consultarServicioPorId(
+          doc.data().Id_Servicio
+        );
+        let estadoReserva =
+          await consultarEstadoReserva.consultarEstadoReservaPorId(
+            doc.data().Id_EstadoReserva
+          );
+        let respuesta = {
+          Id_Reserva: doc.id,
+          Fecha: doc.data().Fecha,
+          Hora: doc.data().Hora,
+          Id_Cliente: doc.data().Id_Cliente,
+          Id_EstadoReserva: doc.data().Id_EstadoReserva,
+          Id_Servicio: doc.data().Id_Servicio,
+          Lugar: doc.data().Lugar,
+          Observaciones: doc.data().Observaciones,
+          NombreServicio: servicio.Nombre,
+          PrecioServicio: servicio.Precio,
+          DuracionServicio: servicio.Duracion,
+          MaterialesServicio: servicio.Materiales,
+          ProcedimientoServicio: servicio.Procedimiento,
+          DescripcionServicio: servicio.Descripcion,
+          ImagenesServicio: servicio.Imagenes,
+          NombreEstadoReserva: estadoReserva.Nombre,
+        };
+        listaReservas.push(respuesta);
+      });
 
-      let servicio = await consultarServicio.consultarServicioPorId(doc.data().Id_Servicio);
-      let estadoReserva = await consultarEstadoReserva.consultarEstadoReservaPorId(doc.data().Id_EstadoReserva);
-      let respuesta = {
-        Id_Reserva: doc.id,
-        Fecha: doc.data().Fecha,
-        Hora: doc.data().Hora,
-        Id_Cliente: doc.data().Id_Cliente,
-        Id_EstadoReserva: doc.data().Id_EstadoReserva,
-        Id_Servicio: doc.data().Id_Servicio,
-        Lugar: doc.data().Lugar,
-        Observaciones: doc.data().Observaciones,
-        NombreServicio: servicio.Nombre,
-        PrecioServicio: servicio.Precio,
-        DuracionServicio: servicio.Duracion,
-        MaterialesServicio: servicio.Materiales,
-        ProcedimientoServicio: servicio.Procedimiento,
-        DescripcionServicio: servicio.Descripcion,
-        ImagenesServicio: servicio.Imagenes,
-        NombreEstadoReserva: estadoReserva.Nombre
-      }
-      listaReservas.push(respuesta);
-
-    });
-
-    await Promise.all(promises); // esperar a que todas las consultas a la base de datos se resuelvan
-    return listaReservas;
-
-  } catch (error) {
-    throw new functions.https.HttpsError('failed-precondition',
-      `Hubo un error al consultar las reservas para la fecha ${data.Fecha}: 
-        ${error.message}`);
+      await Promise.all(promises); // esperar a que todas las consultas a la base de datos se resuelvan
+      return listaReservas;
+    } catch (error) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        `Hubo un error al consultar las reservas para la fecha ${data.Fecha}: 
+        ${error.message}`
+      );
+    }
   }
-});
+);
 
+exports.consultarReservasPorCliente = functions.https.onCall(
+  async (data, context) => {
+    try {
+      let listaReservas = [];
+      let querySnapshot = await db
+        .collection("Reserva")
+        .where("Id_Cliente", "==", data.Id_Cliente)
+        .get();
+
+      let promises = querySnapshot.docs.map(async (doc) => {
+        let servicio = await consultarServicio.consultarServicioPorId(
+          doc.data().Id_Servicio
+        );
+        let estadoReserva =
+          await consultarEstadoReserva.consultarEstadoReservaPorId(
+            doc.data().Id_EstadoReserva
+          );
+        let respuesta = {
+          Id_Reserva: doc.id,
+          Fecha: doc.data().Fecha,
+          Hora: doc.data().Hora,
+          Id_Cliente: doc.data().Id_Cliente,
+          Id_EstadoReserva: doc.data().Id_EstadoReserva,
+          Id_Servicio: doc.data().Id_Servicio,
+          Lugar: doc.data().Lugar,
+          Observaciones: doc.data().Observaciones,
+          NombreServicio: servicio.Nombre,
+          PrecioServicio: servicio.Precio,
+          DuracionServicio: servicio.Duracion,
+          MaterialesServicio: servicio.Materiales,
+          ProcedimientoServicio: servicio.Procedimiento,
+          DescripcionServicio: servicio.Descripcion,
+          ImagenesServicio: servicio.Imagenes,
+          NombreEstadoReserva: estadoReserva.Nombre,
+        };
+        listaReservas.push(respuesta);
+      });
+
+      await Promise.all(promises); // esperar a que todas las consultas a la base de datos se resuelvan
+      return listaReservas;
+    } catch (error) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        `Hubo un error al consultar las reservas para la fecha ${data.Fecha}: 
+        ${error.message}`
+      );
+    }
+  }
+);
 
 exports.consultarReservas = functions.https.onCall(async (data, context) => {
   try {

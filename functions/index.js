@@ -22,3 +22,4 @@ exports.consultarServicios = servicioQuery.consultarServicios;
 
 exports.reservasMasVendidasMes = reporteQuery.reservasMasVendidasMes;
 exports.consultarReservasIdCliente = reservaQuery.consultarReservasIdCliente;
+exports.consultarReservasPorCliente = reservaQuery.consultarReservasPorCliente;
