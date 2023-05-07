@@ -18,6 +18,7 @@ exports.consultarReservasPorFecha = reservaQuery.consultarReservasPorFecha;
 
 exports.crearServicio = servicioQuery.crearServicio;
 exports.consultarServicioReserva = servicioQuery.consultarServicioReserva;
+exports.consultarServicios = servicioQuery.consultarServicios;
 
 exports.reservasMasVendidasMes = reporteQuery.reservasMasVendidasMes;
 exports.consultarReservasIdCliente = reservaQuery.consultarReservasIdCliente;
