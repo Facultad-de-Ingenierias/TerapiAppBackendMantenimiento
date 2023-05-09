@@ -141,7 +141,17 @@ exports.consultarServicios = functions.https.onCall(async (data, context) => {
       const querySnapshot = await db.collection("Servicio").get();
   
       querySnapshot.forEach((doc) => {
-        listaServicios.push(doc.data());
+        let servicio = {
+            Id_Servicio: doc.id,
+            Nombre: doc.data().Nombre,
+            Precio: doc.data().Precio,
+            Duracion: doc.data().Duracion,
+            Materiales: doc.data().Materiales,
+            Procedimiento: doc.data().Procedimiento,
+            Descripcion: doc.data().Descripcion,
+            Imagenes: doc.data().Imagenes
+          };
+        listaServicios.push(servicio);
       });
       return listaServicios;
     } catch (error) {

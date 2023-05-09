@@ -13,12 +13,12 @@ exports.reservasMasVendidasMes = functions.https.onCall(async (data, context) =>
         let masVendidos = [];
 
         if (fechaEntrante <= ultimoDiaDelMes) {
-            const listaReservas = await db.collection("Reserva").where("Id_EstadoReserva", "==", 2).get();
+            const listaReservas = await db.collection("Reserva").where("Id_EstadoReserva", "==", "2").get();
             const listaServicios = await consultarServicios.consultarServiciosLocal();
             //Al parecer no se puede en los foreach de las consultas...
-            for (let i = 0; i < listaServicios.length; i++) {
+            for (const element of listaServicios) {
                 let cantidad = 0;
-                let servicio = listaServicios[i];
+                let servicio = element;
                 listaReservas.forEach((doc) => {
                     let fechaSalida = new Date(doc.data().Fecha);
                     if (fechaSalida.getMonth() == fechaEntrante.getMonth()) {
